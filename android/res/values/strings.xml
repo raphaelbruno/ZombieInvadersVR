@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Zombie Invaders VR</string>
+    <string name="saved_high_score">HIGH_SCORE</string>
+
+</resources>
