@@ -28,6 +28,7 @@ import br.com.raphaelbruno.game.zombieinvaders.vr.model.ScreenBase;
 import br.com.raphaelbruno.game.zombieinvaders.vr.screen.GameOverScreen;
 import br.com.raphaelbruno.game.zombieinvaders.vr.screen.MenuScreen;
 import br.com.raphaelbruno.game.zombieinvaders.vr.screen.PlayScreen;
+import br.com.raphaelbruno.game.zombieinvaders.vr.screen.SplashScreen;
 
 public class GameBase extends CardBoardGame {
 	public ModelBatch modelBatch;
@@ -44,7 +45,7 @@ public class GameBase extends CardBoardGame {
 		modelBatch = new ModelBatch();
 		spriteBatch = new SpriteBatch();
 		
-		gotoMenu();
+		setScreen(new SplashScreen(this));
 	}
 	
 	public void gotoMenu() {

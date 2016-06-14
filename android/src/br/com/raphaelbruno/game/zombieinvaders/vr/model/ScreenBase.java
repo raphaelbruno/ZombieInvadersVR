@@ -43,6 +43,7 @@ import br.com.raphaelbruno.game.zombieinvaders.vr.util.FontUtils;
 import br.com.raphaelbruno.game.zombieinvaders.vr.util.HudUtils;
 
 public abstract class ScreenBase implements Screen {
+	private Color BACKGROUND_COLOR = new Color(0.675f, 0.675f, 0.7f, 1f);
 	private final int MARGIN_SCREEN = 220;
 	private final int MARGIN_HEART = 5;
 	private final int INITIAL_LIFE = 5;
@@ -62,9 +63,11 @@ public abstract class ScreenBase implements Screen {
 	private BitmapFont score;
 	private int scoreValue;
 	
+	
 	public List<Texture> life;
 	public TweenManager tweenManager;
 	public List<ModelInstance> instances;
+    public boolean showTarget = true;
 	
 	public abstract void setupScreen();
 	public abstract void processInput();
@@ -79,7 +82,7 @@ public abstract class ScreenBase implements Screen {
 	public void init(){
 		tweenManager = new TweenManager();
 		instances = new ArrayList<ModelInstance>();
-
+		
 		setupEnviroment();
 		setupScreen();
 		setupUi();
@@ -94,7 +97,7 @@ public abstract class ScreenBase implements Screen {
 		
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 0.5f));
-		environment.set(new ColorAttribute(ColorAttribute.Fog, 0.675f, 0.675f, 0.7f, 1f));
+		environment.set(new ColorAttribute(ColorAttribute.Fog, BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a));
 		environment.add(new DirectionalLight().set(0.6f, 0.6f, 0.4f, -0.5f, -0.6f, -0.5f));
 		environment.add(new DirectionalLight().set(0.6f, 0.6f, 0.4f, 0.5f, -0.6f, 0.5f));
 	}
@@ -126,6 +129,10 @@ public abstract class ScreenBase implements Screen {
 			gameOver();
 			return;
 		}
+	}
+	
+	public void setBackgroundColor(Color color){
+		BACKGROUND_COLOR = color;
 	}
 	
 	public void gameOver(){
@@ -175,7 +182,7 @@ public abstract class ScreenBase implements Screen {
 	
 	public void onDrawEye (Eye paramEye) {
 		
-		Gdx.gl.glClearColor(0.675f, 0.675f, 0.7f, 1);
+		Gdx.gl.glClearColor(BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, BACKGROUND_COLOR.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
         camera.setEyeViewAdjustMatrix(new Matrix4(paramEye.getEyeView()));
@@ -188,7 +195,8 @@ public abstract class ScreenBase implements Screen {
 		game.modelBatch.end();
 		
 		game.spriteBatch.begin();
-		game.spriteBatch.draw(target, (Gdx.graphics.getWidth()-target.getWidth())/2, (Gdx.graphics.getHeight()-target.getHeight())/2);
+		if(showTarget)
+			game.spriteBatch.draw(target, (Gdx.graphics.getWidth()-target.getWidth())/2, (Gdx.graphics.getHeight()-target.getHeight())/2);
 		if(visibleUI){
 			score.draw(game.spriteBatch, HudUtils.formattedScore(scoreValue), (Gdx.graphics.getWidth()-(score.getSpaceWidth() * HudUtils.formattedScore(scoreValue).length())) / 2, Gdx.graphics.getHeight()-MARGIN_SCREEN);
 			if(life.size() > 0){
@@ -200,8 +208,11 @@ public abstract class ScreenBase implements Screen {
 				}
 			}
 		}
+		renderSprite(Gdx.graphics.getDeltaTime());
 		game.spriteBatch.end();
 	}
+	
+	public void renderSprite(float delta) { }
 	
 	@Override
 	public void render(float delta) {
