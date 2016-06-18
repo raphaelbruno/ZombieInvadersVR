@@ -17,6 +17,7 @@
 package br.com.raphaelbruno.game.zombieinvaders.vr;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.android.CardBoardGame;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -35,6 +36,7 @@ public class GameBase extends CardBoardGame {
 	public SpriteBatch spriteBatch;
 	public ZombieInvadersVR launcher;
 	public int highScore;
+	public Music soundBg;
 	
 	public GameBase(ZombieInvadersVR launcher){
 		this.launcher = launcher;
@@ -44,7 +46,9 @@ public class GameBase extends CardBoardGame {
 	public void create () {
 		modelBatch = new ModelBatch();
 		spriteBatch = new SpriteBatch();
-		
+		soundBg = Gdx.audio.newMusic(Gdx.files.internal("sounds/bg.mp3"));
+
+		playBg();
 		setScreen(new SplashScreen(this));
 	}
 	
@@ -62,6 +66,19 @@ public class GameBase extends CardBoardGame {
 			launcher.setHighScore(highScore);
 		}
 		setScreen(new GameOverScreen(this));
+	}
+	
+	public void playBg() {
+		soundBg.play();
+		soundBg.setOnCompletionListener(new Music.OnCompletionListener() {
+			@Override public void onCompletion(Music music) {
+				playBg();
+			}
+		});
+	}
+
+	public void stopBg() {
+		soundBg.stop();
 	}
 	
     public void vibrate(){

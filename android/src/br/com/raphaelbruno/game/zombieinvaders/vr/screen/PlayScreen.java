@@ -18,6 +18,7 @@ package br.com.raphaelbruno.game.zombieinvaders.vr.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Timer;
 
 import br.com.raphaelbruno.game.zombieinvaders.vr.GameBase;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Enemy;
@@ -30,12 +31,12 @@ public class PlayScreen extends ScreenBase {
 	public static final float ENEMY_MAX_RADIUS_DISTANCE = 25f;
 	public static final float ENEMY_MIN_RADIUS_DISTANCE = 1f;
 	public static final float ENEMY_TIME_WALK = 20f;
-	public static final int TIME_MIN_TO_CREATE = 1000;
-	public static final int TIME_MAX_TO_CREATE = 5000;
-	public static final int TIME_TO_DECREMENT = 100;
+	public static final float TIME_MIN_TO_CREATE = 1f;
+	public static final float TIME_MAX_TO_CREATE = 5f;
+	public static final float TIME_TO_DECREMENT = .1f;
 	
 	private Ground level;
-	private int currentTimeToCreate;
+	private float currentTimeToCreate;
     
 	public PlayScreen(GameBase game) {
 		super(game);
@@ -48,22 +49,28 @@ public class PlayScreen extends ScreenBase {
 		level = new Ground.Builder().build(this, "models/level.g3db");
 		instances.add(level);
 		
+		game.stopBg();
+		
 		showUI();
 		createEnemy();
 	}
 	
 	public void shoot(){
+		if(life.isEmpty()) return;
+		
 		GameObject gameObject = getObject(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 		
+		soundEffectPlayerShoot.play();
 		game.vibrate();
+		
 		if(gameObject != null && gameObject instanceof Enemy)
 			killEnemy((Enemy) gameObject);
 	}
 	
 	private void killEnemy(Enemy enemy) {
-		Float dist = new Vector3().dst(enemy.transform.getTranslation(new Vector3()));
-		increaseScore(dist.intValue());
-		enemy.showScoreDroped(dist.intValue());
+		Float distance = new Vector3().dst(enemy.transform.getTranslation(new Vector3()));
+		increaseScore(distance.intValue());
+		enemy.showScoreDroped(distance.intValue());
 		enemy.die();
 	}
 
@@ -94,24 +101,15 @@ public class PlayScreen extends ScreenBase {
 		
 		if(life != null && life.isEmpty()) return;
 		
-		new Thread(new Runnable() {
-			@Override public void run() {
-				try {
-					Thread.sleep(currentTimeToCreate);
-					
-					if(currentTimeToCreate > TIME_MIN_TO_CREATE)
-						currentTimeToCreate -= TIME_TO_DECREMENT;
-					
-					Gdx.app.postRunnable(new Runnable() {
-						@Override public void run() {
-							createEnemy();
-						}
-					});
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				if(currentTimeToCreate > TIME_MIN_TO_CREATE)
+					currentTimeToCreate -= TIME_TO_DECREMENT;
+				
+				createEnemy();
 			}
-		}).start();
+		}, currentTimeToCreate);
 	}
 	
 }

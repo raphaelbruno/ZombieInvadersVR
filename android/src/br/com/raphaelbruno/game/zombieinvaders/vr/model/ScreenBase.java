@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.CardboardCamera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -49,10 +50,10 @@ public abstract class ScreenBase implements Screen {
 	private final int INITIAL_LIFE = 5;
 	private final String TEXTURE_HEART = "sprites/heart.png";
 	private final String TEXTURE_TARGET = "sprites/target.png";
-    private final float Z_NEAR = 0.1f;
-    private final float Z_FAR = 25.0f;
-    private final float CAMERA_Y = 1.6f;
-    private boolean visibleUI = false;
+	private boolean visibleUI = false;
+	public static final float Z_NEAR = 0.1f;
+    public static final float Z_FAR = 25.0f;
+    public static final float CAMERA_Y = 1.6f;
 	
     public final GameBase game;
 	
@@ -71,6 +72,14 @@ public abstract class ScreenBase implements Screen {
 	
     public boolean showTarget = true;
 	
+	public Sound soundEffectPlayerShoot;
+	public Sound soundEffectPlayerDying;
+	public Sound soundEffectEnemyEating;
+	public Sound soundEffectUI;
+	public List<Sound> soundsEffectEnemyAttack;
+	public List<Sound> soundsEffectEnemyGroan;
+	
+	
 	public abstract void setupScreen();
 	public abstract void processInput();
 	public abstract void shoot();
@@ -85,10 +94,27 @@ public abstract class ScreenBase implements Screen {
 		tweenManager = new TweenManager();
 		instances = new ArrayList<ModelInstance>();
 		endFade = new FadeRenderer();
-		
+		setupSound();
 		setupEnviroment();
 		setupScreen();
 		setupUi();
+	}
+	
+	private void setupSound() {
+		soundEffectPlayerShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/player_shoot.mp3"));
+		soundEffectPlayerDying = Gdx.audio.newSound(Gdx.files.internal("sounds/player_dying.mp3"));
+		soundEffectEnemyEating = Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_eating.mp3"));
+		soundEffectUI = Gdx.audio.newSound(Gdx.files.internal("sounds/ui.mp3"));;
+		
+		soundsEffectEnemyAttack = new ArrayList<Sound>();
+		soundsEffectEnemyAttack.add(Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_attack1.mp3")));
+		soundsEffectEnemyAttack.add(Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_attack2.mp3")));
+		soundsEffectEnemyAttack.add(Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_attack3.mp3")));
+		soundsEffectEnemyAttack.add(Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_attack4.mp3")));
+		
+		soundsEffectEnemyGroan = new ArrayList<Sound>();
+		soundsEffectEnemyGroan.add(Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_breath1.mp3")));
+		soundsEffectEnemyGroan.add(Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_breath2.mp3")));
 	}
 	
 	private void setupEnviroment() {
@@ -140,6 +166,9 @@ public abstract class ScreenBase implements Screen {
 	
 	public void gameOver(){
 		if(!endFade.isPlaying){
+			soundEffectPlayerDying.play();
+			soundEffectEnemyEating.play();
+			
 			endFade.stop();
 			endFade.start();
 			endFade.setOnFinished(new FadeRenderer.OnFinished() {
@@ -235,12 +264,15 @@ public abstract class ScreenBase implements Screen {
 	
 	@Override
 	public void dispose() {
-		game.toast("onDispose");
 		game.modelBatch.dispose();
 		game.spriteBatch.dispose();
 		heart.dispose();
 		target.dispose();
 		instances.clear();
+		soundEffectEnemyEating.dispose();
+		soundEffectPlayerDying.dispose();
+		soundEffectPlayerShoot.dispose();
+		soundEffectUI.dispose();
 		AssetRepository.getInstance().dispose();
 	}
 	

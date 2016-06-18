@@ -68,16 +68,23 @@ public class GameOverScreen extends ScreenBase {
 		uiDoor.moveTo(0,0,5f);
 		uiDoor.rotateTo(180f);
 		instances.add(uiDoor);
+		
+		if(!game.soundBg.isPlaying())
+			game.playBg();
 	}
 	
 	public void shoot(){
 		GameObject obj = getObject(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 		
+		soundEffectPlayerShoot.play();
 		game.vibrate();
+		
 		if(obj == uiPlayAgain){
+			soundEffectUI.play();
 			game.gotoPlay();
 		}
 		if(obj == uiExit || obj == uiDoor){
+			soundEffectUI.play();
 			Gdx.app.exit();
 		}
 	}

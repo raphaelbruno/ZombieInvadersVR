@@ -16,7 +16,6 @@
 
 package br.com.raphaelbruno.game.zombieinvaders.vr.model;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -25,14 +24,16 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController.AnimationDesc;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Timer;
 
 import br.com.raphaelbruno.game.zombieinvaders.vr.tween.GameObjectAccessor;
 import br.com.raphaelbruno.game.zombieinvaders.vr.util.AssetRepository;
 
 public class Enemy extends GameObject {
 	public final static BoundingBox ENEMY_BOUNDS = new BoundingBox( new Vector3(-.2f, -0f, -.1f), new Vector3(.2f, 1.5f, .5f) );
-	public static int TIME_TO_ATTACK = 3000;
-	public static int TIME_TO_DIE = 3000;
+	public static float TOTAL_GROAN = 2;
+	public static float TIME_TO_ATTACK = 3;
+	public static float TIME_TO_DIE = 3;
 	public Enemy.State state;
 	
 	public Enemy(ScreenBase context, Model model) {
@@ -40,6 +41,20 @@ public class Enemy extends GameObject {
 	}
 	public Enemy(ScreenBase context, Model model, BoundingBox bounds) {
 		super(context, model, bounds);
+	}
+	
+	private void groans(float delay) {
+		if(context.life.isEmpty()) return;
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				if(!context.life.isEmpty() && !state.equals(Enemy.State.DYING)){
+					float distance = new Vector3().dst(transform.getTranslation(new Vector3()));
+					int randomGroan = (int) Math.floor(context.soundsEffectEnemyGroan.size()*Math.random());
+					context.soundsEffectEnemyGroan.get(randomGroan).play(1f - (distance/ScreenBase.Z_FAR));
+				}
+			}
+		}, delay);
 	}
 	
 	public void walkTo(Vector3 position, float time, final GameObject.OnAnimationComplete onAnimationComplete) {
@@ -50,6 +65,10 @@ public class Enemy extends GameObject {
 				if(onAnimationComplete != null) onAnimationComplete.run(object);
 			}
 		});
+		
+		for(float i = 1f; i <= TOTAL_GROAN; i++){
+			groans(i * (time/TOTAL_GROAN));
+		}
 	}
 	
 	public void setRandomSkin(){
@@ -89,21 +108,16 @@ public class Enemy extends GameObject {
 		context.removeLife();
 		if(context.life.isEmpty()) return;
 		
-		new Thread(new Runnable() {
-			@Override public void run() {
-				try {
-					Thread.sleep(TIME_TO_ATTACK);
-					Gdx.app.postRunnable(new Runnable() {
-						@Override public void run() {
-							if(!state.equals(Enemy.State.DYING))
-								keepAttacking();
-						}
-					});
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-				}
+		int randomAttack = (int) Math.floor(context.soundsEffectEnemyAttack.size()*Math.random());
+		context.soundsEffectEnemyAttack.get(randomAttack).play();
+		
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				if(!state.equals(Enemy.State.DYING))
+					keepAttacking();
 			}
-		}).start();
+		}, TIME_TO_ATTACK);		
 	}
 	
 	public void die() {
@@ -114,25 +128,17 @@ public class Enemy extends GameObject {
 	    
 		changeState(Enemy.State.DYING, 1);
 		
-		new Thread(new Runnable() {
-			@Override public void run() {
-				try {
-					Thread.sleep(TIME_TO_DIE);
-					Gdx.app.postRunnable(new Runnable() {
-						@Override public void run() {
-							Vector3 position = enemy.transform.getTranslation(new Vector3());
-							enemy.moveToAnimation(position.x, -0.5f, position.z, 2, new GameObject.OnAnimationComplete() {
-								@Override public void run(GameObject object) {
-									context.instances.remove(enemy);
-								}
-							});
-						}
-					});
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-				}
+		Timer.schedule(new Timer.Task() {
+			@Override
+			public void run() {
+				Vector3 position = enemy.transform.getTranslation(new Vector3());
+				enemy.moveToAnimation(position.x, -0.5f, position.z, 2, new GameObject.OnAnimationComplete() {
+					@Override public void run(GameObject object) {
+						context.instances.remove(enemy);
+					}
+				});
 			}
-		}).start();
+		}, TIME_TO_ATTACK);		
 	}
 	
 	public void showScoreDroped(int score) {
