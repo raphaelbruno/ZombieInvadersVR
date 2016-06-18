@@ -79,7 +79,8 @@ public class FadeRenderer extends ShapeRenderer {
 		isPlaying = false;
 	}
 	
-	interface OnFinished {
+	
+	public interface OnFinished {
 		public void run();
 	}
 }

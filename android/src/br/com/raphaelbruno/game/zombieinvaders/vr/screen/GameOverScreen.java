@@ -23,6 +23,7 @@ import br.com.raphaelbruno.game.zombieinvaders.vr.GameBase;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Enemy;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.GameObject;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Ground;
+import br.com.raphaelbruno.game.zombieinvaders.vr.model.LaserRenderer;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.ScreenBase;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Word;
 import br.com.raphaelbruno.game.zombieinvaders.vr.util.AssetRepository;
@@ -74,18 +75,25 @@ public class GameOverScreen extends ScreenBase {
 	}
 	
 	public void shoot(){
-		GameObject obj = getObject(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-		
-		soundEffectPlayerShoot.play();
-		game.vibrate();
-		
-		if(obj == uiPlayAgain){
-			soundEffectUI.play();
-			game.gotoPlay();
-		}
-		if(obj == uiExit || obj == uiDoor){
-			soundEffectUI.play();
-			Gdx.app.exit();
+		if(!laser.isPlaying){
+			laser.play(new LaserRenderer.OnLaserFinished() {
+				@Override public void run() {
+			
+					GameObject obj = getObject(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+					
+					if(obj == uiPlayAgain){
+						soundEffectUI.play();
+						game.gotoPlay();
+					}
+					if(obj == uiExit || obj == uiDoor){
+						soundEffectUI.play();
+						Gdx.app.exit();
+					}
+					
+				}
+			});
+			soundEffectPlayerShoot.play();
+			game.vibrate();
 		}
 	}
 	

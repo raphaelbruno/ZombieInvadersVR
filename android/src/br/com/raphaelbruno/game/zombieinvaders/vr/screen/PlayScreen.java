@@ -60,6 +60,7 @@ public class PlayScreen extends ScreenBase {
 		
 		GameObject gameObject = getObject(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
 		
+		laser.play();
 		soundEffectPlayerShoot.play();
 		game.vibrate();
 		

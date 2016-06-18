@@ -69,6 +69,7 @@ public abstract class ScreenBase implements Screen {
 	public TweenManager tweenManager;
 	public List<ModelInstance> instances;
 	public FadeRenderer endFade;
+	public LaserRenderer laser;
 	
     public boolean showTarget = true;
 	
@@ -94,6 +95,8 @@ public abstract class ScreenBase implements Screen {
 		tweenManager = new TweenManager();
 		instances = new ArrayList<ModelInstance>();
 		endFade = new FadeRenderer();
+		laser = new LaserRenderer();
+		
 		setupSound();
 		setupEnviroment();
 		setupScreen();
@@ -252,6 +255,7 @@ public abstract class ScreenBase implements Screen {
 		renderSprite(Gdx.graphics.getDeltaTime());
 		game.spriteBatch.end();
 		if(endFade.isPlaying) endFade.shows(Gdx.graphics.getDeltaTime());
+		if(laser.isPlaying) laser.shows(Gdx.graphics.getDeltaTime());
 	}
 	
 	public void renderSprite(float delta) { }
