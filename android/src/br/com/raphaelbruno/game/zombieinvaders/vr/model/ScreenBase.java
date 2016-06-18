@@ -67,6 +67,8 @@ public abstract class ScreenBase implements Screen {
 	public List<Texture> life;
 	public TweenManager tweenManager;
 	public List<ModelInstance> instances;
+	public FadeRenderer endFade;
+	
     public boolean showTarget = true;
 	
 	public abstract void setupScreen();
@@ -82,6 +84,7 @@ public abstract class ScreenBase implements Screen {
 	public void init(){
 		tweenManager = new TweenManager();
 		instances = new ArrayList<ModelInstance>();
+		endFade = new FadeRenderer();
 		
 		setupEnviroment();
 		setupScreen();
@@ -136,7 +139,16 @@ public abstract class ScreenBase implements Screen {
 	}
 	
 	public void gameOver(){
-		game.gotoGameOver(scoreValue);
+		if(!endFade.isPlaying){
+			endFade.stop();
+			endFade.start();
+			endFade.setOnFinished(new FadeRenderer.OnFinished() {
+				@Override
+				public void run() {
+					game.gotoGameOver(scoreValue);
+				}
+			});
+		}
 	}
 	
 	public void increaseScore(int score) {
@@ -210,6 +222,7 @@ public abstract class ScreenBase implements Screen {
 		}
 		renderSprite(Gdx.graphics.getDeltaTime());
 		game.spriteBatch.end();
+		if(endFade.isPlaying) endFade.shows(Gdx.graphics.getDeltaTime());
 	}
 	
 	public void renderSprite(float delta) { }
