@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 
 import br.com.raphaelbruno.game.zombieinvaders.vr.GameBase;
+import br.com.raphaelbruno.game.zombieinvaders.vr.R;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Enemy;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.GameObject;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Ground;
@@ -51,16 +52,16 @@ public class GameOverScreen extends ScreenBase {
 		deadEnemy.changeState(Enemy.State.DYING, 1);
 		instances.add(deadEnemy);
 		
-		uiPlayAgain = new Word.Builder().build(this, "PLAY AGAIN");
+		uiPlayAgain = new Word.Builder().build(this, game.getString(R.string.ui_play_again));
 		uiPlayAgain.moveTo(0f, 1f, -5f);
 		instances.add(uiPlayAgain);
 		
-		uiHighScore = new Word.Builder().build(this, "HIGH SCORE", HudUtils.formattedScore(game.highScore));
+		uiHighScore = new Word.Builder().build(this, game.getString(R.string.ui_score), HudUtils.formattedScore(game.highScore));
 		uiHighScore.enabled = false;
 		uiHighScore.moveTo(0f, 3f, -5f);
 		instances.add(uiHighScore);
 		
-		uiExit = new Word.Builder().build(this, "EXIT");
+		uiExit = new Word.Builder().build(this, game.getString(R.string.ui_exit));
 		uiExit.moveTo(0f, 2.5f, 5f);
 		uiExit.rotateTo(180);
 		instances.add(uiExit);

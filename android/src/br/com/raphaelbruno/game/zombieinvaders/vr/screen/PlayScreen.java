@@ -70,8 +70,9 @@ public class PlayScreen extends ScreenBase {
 	
 	private void killEnemy(Enemy enemy) {
 		Float distance = new Vector3().dst(enemy.transform.getTranslation(new Vector3()));
-		increaseScore(distance.intValue());
-		enemy.showScoreDroped(distance.intValue());
+		int score = distance.intValue() > 0 ? distance.intValue() : 1;
+		increaseScore(score);
+		enemy.showScoreDroped(score);
 		enemy.die();
 	}
 

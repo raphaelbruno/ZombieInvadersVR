@@ -16,6 +16,10 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f030000;
         public static final int saved_high_score=0x7f030001;
+        public static final int ui_exit=0x7f030004;
+        public static final int ui_play_again=0x7f030005;
+        public static final int ui_score=0x7f030003;
+        public static final int ui_start=0x7f030002;
     }
     public static final class style {
         public static final int GdxTheme=0x7f040000;

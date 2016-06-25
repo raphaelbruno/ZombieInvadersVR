@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 
 import br.com.raphaelbruno.game.zombieinvaders.vr.GameBase;
+import br.com.raphaelbruno.game.zombieinvaders.vr.R;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.GameObject;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.Ground;
 import br.com.raphaelbruno.game.zombieinvaders.vr.model.LaserRenderer;
@@ -44,16 +45,16 @@ public class MenuScreen extends ScreenBase {
 		level = new Ground.Builder().build(this, "models/level.g3db");
 		instances.add(level);
 		
-		uiStartGame = new Word.Builder().build(this, "START GAME");
+		uiStartGame = new Word.Builder().build(this, game.getString(R.string.ui_start));
 		uiStartGame.moveTo(0f, 1.5f, -5f);
 		instances.add(uiStartGame);
 		
-		uiHighScore = new Word.Builder().build(this, "HIGH SCORE", HudUtils.formattedScore(game.highScore));
+		uiHighScore = new Word.Builder().build(this, game.getString(R.string.ui_score), HudUtils.formattedScore(game.highScore));
 		uiHighScore.rotateTo(90);
 		uiHighScore.moveTo(-5f, 3.5f, 0f);
 		instances.add(uiHighScore);
 		
-		uiExit = new Word.Builder().build(this, "EXIT");
+		uiExit = new Word.Builder().build(this, game.getString(R.string.ui_exit));
 		uiExit.moveTo(0f, 2.5f, 5f);
 		uiExit.rotateTo(180);
 		instances.add(uiExit);

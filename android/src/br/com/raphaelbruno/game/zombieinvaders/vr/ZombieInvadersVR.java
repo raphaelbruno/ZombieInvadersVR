@@ -40,7 +40,7 @@ public class ZombieInvadersVR extends CardBoardAndroidApplication {
         
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         config = new AndroidApplicationConfiguration();
-        config.numSamples = 2;
+        config.numSamples = 1;
 		
         gameBase = new GameBase(this);
         gameBase.highScore = sharedPreferences.getInt(getString(R.string.saved_high_score), 0);

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_start">INICIAR</string>
+    <string name="ui_score">PONTOS</string>
+    <string name="ui_exit">SAIR</string>
+    <string name="ui_play_again">JOGAR DE NOVO</string>
+</resources>

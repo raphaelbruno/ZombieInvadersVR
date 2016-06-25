@@ -88,6 +88,10 @@ public class GameBase extends CardBoardGame {
 	public void toast(String message) {
 		launcher.toast(message);
 	}
+	
+	public String getString(int id) {
+		return launcher.getResources().getString(id);
+	}
     
 	@Override public void render () {
 		super.render(); 
@@ -114,4 +118,5 @@ public class GameBase extends CardBoardGame {
 	@Override public void onFinishFrame(Viewport paramViewport) { }
 	@Override public void onRendererShutdown() { }
 	@Override public void onCardboardTrigger() { }
+
 }

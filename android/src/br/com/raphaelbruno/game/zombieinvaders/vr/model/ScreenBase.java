@@ -216,12 +216,12 @@ public abstract class ScreenBase implements Screen {
 	
 	
 	
-	private void updateObjects() {
-		tweenManager.update(Gdx.graphics.getDeltaTime());
+	private void updateObjects(float delta) {
+		tweenManager.update(delta);
 		
 		for(ModelInstance item : instances) 
 			if(item instanceof Enemy) 
-				((Enemy) item).animations.update(Gdx.graphics.getDeltaTime());
+				((Enemy) item).animations.update(delta);
 	}
 	
 	public void onDrawEye (Eye paramEye) {
@@ -263,7 +263,7 @@ public abstract class ScreenBase implements Screen {
 	@Override
 	public void render(float delta) {
 		processInput();
-		updateObjects();
+		updateObjects(delta);
 	}
 	
 	@Override

@@ -3,5 +3,9 @@
 
     <string name="app_name">Zombie Invaders VR</string>
     <string name="saved_high_score">HIGH_SCORE</string>
-
+	
+    <string name="ui_start">START</string>
+    <string name="ui_score">SCORE</string>
+    <string name="ui_exit">EXIT</string>
+    <string name="ui_play_again">PLAY AGAIN</string>
 </resources>

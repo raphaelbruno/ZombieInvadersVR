@@ -21,7 +21,7 @@ import java.util.Locale;
 public class HudUtils {
 	
 	public static String formattedScore(int score){
-		return String.format(Locale.getDefault(), "%08d", score);
+		return String.format(Locale.getDefault(), "%06d", score);
 	}
 	
 }
