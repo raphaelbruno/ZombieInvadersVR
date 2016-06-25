@@ -36,17 +36,20 @@ public class ZombieInvadersVR extends CardBoardAndroidApplication {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AssetRepository.getInstance().dispose();
         
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        config = new AndroidApplicationConfiguration();
-        config.numSamples = 1;
-		
-        gameBase = new GameBase(this);
-        gameBase.highScore = sharedPreferences.getInt(getString(R.string.saved_high_score), 0);
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        initialize(gameBase, config);
+        if(savedInstanceState == null){
+	        AssetRepository.getInstance().dispose();
+	        
+	        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+	        config = new AndroidApplicationConfiguration();
+	        config.numSamples = 1;
+			
+	        gameBase = new GameBase(this);
+	        gameBase.highScore = sharedPreferences.getInt(getString(R.string.saved_high_score), 0);
+	        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+	
+	        initialize(gameBase, config);
+        }
     }
     
     @Override public void onCardboardTrigger() {
